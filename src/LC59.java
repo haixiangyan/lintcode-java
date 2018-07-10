@@ -22,10 +22,12 @@ public class LC59 {
                     minSum = numbers[left] + numbers[right] + numbers[i];
                 }
 
-                if (numbers[left] + numbers[right] < newTarget) {
+                if (numbers[left] + numbers[right] > newTarget) {
+                    right--;
+                } else if (numbers[left] + numbers[right] < newTarget) {
                     left++;
                 } else {
-                    right--;
+                    return numbers[left] + numbers[right] + numbers[i];
                 }
             }
         }
