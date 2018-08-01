@@ -23,10 +23,13 @@ public class LC900 {
         if (upperNode == null) {
             return lowerNode.val;
         }
-        if (target - lowerNode.val > upperNode.val - target) {
+
+        if (Math.abs(target - lowerNode.val) > Math.abs(target - upperNode.val)) {
             return upperNode.val;
         }
-        return lowerNode.val;
+        else {
+            return lowerNode.val;
+        }
     }
 
     private TreeNode lowerBound(TreeNode root, double target) {
@@ -42,7 +45,6 @@ public class LC900 {
         if (lowerNode != null) {
             return lowerNode;
         }
-
         return root;
     }
 
@@ -51,7 +53,7 @@ public class LC900 {
             return null;
         }
 
-        if (target > root.val) {
+        if (root.val <= target) {
             return upperBound(root.right, target);
         }
 
@@ -59,7 +61,6 @@ public class LC900 {
         if (upperNode != null) {
             return upperNode;
         }
-
         return root;
     }
 }
