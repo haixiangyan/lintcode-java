@@ -32,4 +32,37 @@ public class LC17 {
             subset.remove(subset.size() - 1);
         }
     }
+
+    public List<List<Integer>> subsets2(int[] nums) {
+        if (nums == null) {
+            return null;
+        }
+
+        List<List<Integer>> results = new ArrayList<>();
+
+        if (nums.length == 0) {
+            results.add(new ArrayList<>());
+            return results;
+        }
+
+        Arrays.sort(nums);
+        dfs(new ArrayList<>(), nums, 0, results);
+
+        return results;
+    }
+
+    private void dfs(List<Integer> subset, int[] nums, int index, List<List<Integer>> results) {
+        if (index == nums.length) {
+            results.add(new ArrayList<>(subset));
+            return;
+        }
+
+        // Choose current element
+        subset.add(nums[index]);
+        dfs(subset, nums, index + 1, results);
+
+        // Not choose current element
+        subset.remove(subset.size() - 1);
+        dfs(subset, nums, index + 1, results);
+    }
 }
