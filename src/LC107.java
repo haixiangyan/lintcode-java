@@ -39,11 +39,11 @@ public class LC107 {
 
 
     public boolean wordBreakMemoryExceed(String s, Set<String> dict) {
-        if (dict.size() == 0) {
-            return false;
-        }
         if (s.length() == 0) {
             return true;
+        }
+        if (dict.size() == 0) {
+            return false;
         }
 
         return helper(s, dict);
