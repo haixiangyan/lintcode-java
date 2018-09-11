@@ -4,10 +4,10 @@ const enSideBar = init.makeSideBar('en');
 const zhSideBar = init.makeSideBar('zh');
 
 module.exports = {
-    base: "/",
+    base: "/lintcode/",
     description: 'Here are some thoughts about lintcode\' problems',
     nav: [
-        {text: 'Github', link: 'https://github.com/Haixiang6123/Lintcode'},
+        {text: 'Github', link: 'https://github.com/Haixiang6123/lintcode'},
     ],
     locales: {
         '/': {
