@@ -1,58 +1,43 @@
 public class LC200 {
 
     public String longestPalindrome(String s) {
-        String curStr = "";
-        int maxLen = 0;
-        int strLen;
-        int left = 0, right = 0;
-        int curLeft = 0, curRight = 0;
-
-        // Check empty string
-        if (s == null || s.equals("")) {
-            return "";
+        if (s == null) {
+            return null;
         }
 
-        // Get string length
-        strLen = s.length();
+        int longest = 0;
+        int start = 0;
+        int curtLongest = 0;
 
-        for (int mid = 0 ; mid < strLen ; mid++) {
-            // For odd length case
-            for (left = mid - 1, right = mid + 1 ; left >= 0 && right < strLen ; left --, right ++) {
-                if (s.charAt(left) != s.charAt(right)) {
-                    break;
-                }
-
-                if (right - left + 1 > maxLen) {
-                    maxLen = right - left + 1;
-                    curLeft = left;
-                    curRight = right;
-                }
+        for (int i = 0; i < s.length(); i++) {
+            curtLongest = findLongestPalindrome(s, i, i);
+            if (curtLongest > longest) {
+                longest = curtLongest;
+                start = i - curtLongest / 2;
             }
 
-            // For even length case
-            for (left = mid, right = mid + 1 ; left >= 0 && right < strLen ; left--, right ++) {
-                if (s.charAt(left) != s.charAt(right)) {
-                    break;
-                }
-
-                if (right - left + 1 > maxLen) {
-                    maxLen = right - left + 1;
-                    curLeft = left;
-                    curRight = right;
-                }
+            curtLongest = findLongestPalindrome(s, i, i + 1);
+            if (curtLongest > longest) {
+                longest = curtLongest;
+                start = i - curtLongest / 2 + 1;
             }
         }
 
-        curStr = s.substring(curLeft, curRight + 1);
-
-        return curStr;
+        return s.substring(start, start + longest);
     }
 
-    public static void main(String[] args) {
-        String str = "abcdzdcab";
+    private int findLongestPalindrome(String s, int left, int right) {
+        int len = 0;
+        while (left >= 0 && right < s.length()) {
+            if (s.charAt(left) != s.charAt(right)) {
+                break;
+            }
 
-        LC200 lc200 = new LC200();
+            len = len + ((left == right) ? 1 : 2);
 
-        System.out.println(lc200.longestPalindrome(str));
+            left--;
+            right++;
+        }
+        return len;
     }
 }
