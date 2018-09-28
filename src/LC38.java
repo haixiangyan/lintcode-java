@@ -1,46 +1,30 @@
 public class LC38 {
     public int searchMatrix(int[][] matrix, int target) {
-        if (matrix.length == 0) {
-            return 0;
+        if (matrix == null || matrix.length == 0) {
+            return -1;
+        }
+        if (matrix[0] == null || matrix[0].length == 0) {
+            return -1;
         }
 
-        int right = matrix[0].length - 1;
-        int left = 0;
-        int top = 0;
-        int bottom = matrix.length - 1;
-
         int count = 0;
+        int row = matrix.length, col = matrix[0].length;
+        int rowIndex = matrix.length - 1, colIndex = 0;
 
-        while (left <= right && top <= bottom) {
-            if (matrix[top][right] > target) {
-                // Remove this column
-                right --;
+        while (rowIndex >= 0 && colIndex < col) {
+            if (matrix[rowIndex][colIndex] == target) {
+                count++;
+                rowIndex--;
+                colIndex++;
             }
-            else if (matrix[top][right] == target) {
-                // Remove this column and this row
-                right --;
-                top ++;
-                // Count
-                count ++;
+            else if (matrix[rowIndex][colIndex] > target) {
+                rowIndex--;
             }
             else {
-                // Remove this row
-                top ++;
+                colIndex++;
             }
         }
 
         return count;
-    }
-
-    public static void main(String[] args) {
-        int[][] matrix = {
-                {1}
-        };
-
-        int target = 1;
-
-        LC38 lc38 = new LC38();
-
-        System.out.println(lc38.searchMatrix(matrix, target));
     }
 }
