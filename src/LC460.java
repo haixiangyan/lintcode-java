@@ -1,72 +1,58 @@
 public class LC460 {
 
     public int[] kClosestNumbers(int[] A, int target, int k) {
-        if (k == 0) {
-            return new int[0];
-        }
+        int left = findCloserLeft(A, target);
+        int right = left + 1;
 
-        // Find the cloest number
-        int mid = binarySearch(A, target);
-
-        int[] pairs = new int[k];
-        pairs[0] = A[mid];
-
-        int left = mid - 1, right = mid + 1;
-
-        for (int i = 1 ; i < k ; i++) {
-            if (left < 0) {
-                pairs[i] = A[right];
-                right ++;
-            }
-            else if (right == A.length) {
-                pairs[i] = A[left];
-                left --;
-            }
-            else if (Math.abs(A[left] - target) > Math.abs(A[right] - target)) {
-                pairs[i] = A[right];
-                right ++;
+        int[] results = new int[k];
+        int index = 0;
+        for (int i = 0; i < k; i++) {
+            if (isLeftCloser(A, target, left, right)) {
+                results[index++] = A[left];
+                left--;
             }
             else {
-                pairs[i] = A[left];
-                left --;
+                results[index++] = A[right];
+                right++;
             }
         }
 
-        return pairs;
+        return results;
     }
 
-    private int binarySearch(int[] A, int target) {
-        int start = 0;
-        int end = A.length - 1;
+    private boolean isLeftCloser(int[] A, int target, int left, int right) {
+        if (left < 0) {
+            return false;
+        }
+        if (right >= A.length) {
+            return true;
+        }
 
+        if (target - A[left] != A[right] - target) {
+            return target - A[left] < A[right] - target;
+        }
+
+        return true;
+    }
+
+    private int findCloserLeft(int[] A, int target) {
+        int start = 0, end = A.length - 1;
         while (start + 1 < end) {
             int mid = start + (end - start) / 2;
-
-            if (A[mid] == target) {
-                return mid;
-            }
-            else if (A[mid] < target) {
+            if (A[mid] < target) {
                 start = mid;
-            }
-            else {
+            } else {
                 end = mid;
             }
         }
 
-        return Math.abs(A[start] - target) > Math.abs(A[end] - target) ? end : start;
-    }
-
-    public static void main(String[] args) {
-        int[] A = {1,4,6,10,20};
-        int target = 21;
-        int k = 4;
-
-        LC460 lc460 = new LC460();
-
-        int[] pairs = lc460.kClosestNumbers(A, target, k);
-
-        for (Integer i : pairs) {
-            System.out.println(i);
+        if (A[end] < target) {
+            return end;
         }
+        if (A[start] < target) {
+            return start;
+        }
+
+        return -1;
     }
 }
