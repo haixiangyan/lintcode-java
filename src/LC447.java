@@ -3,64 +3,42 @@ Given [1, 3, 6, 9, 21, ...], and target = 3, return 1.
 Given [1, 3, 6, 9, 21, ...], and target = 4, return -1.
  */
 public class LC447 {
-    public int searchBigSortedArray(int[] reader, int target) {
-        int bound = findBound(reader, target);
-
-        return binarySeaerch(reader, bound, target);
+    static class ArrayReader {
+        public static int get(int index) {
+            return 0;
+        }
     }
 
-    private int findBound(int[] reader, int target) {
-        int count = 0;
-        int num = 0;
+    public int searchBigSortedArray(ArrayReader reader, int target) {
+        int upperBound = findUpperBound(reader, target);
 
-        while ((num = reader[count]) != 2147483647) {
-            if (num >= target) {
-                return count;
-            }
-
-            count = count * 2;
-        }
-        return -1;
-    }
-
-    private int binarySeaerch(int[] reader, int bound, int target) {
-        if (bound == -1) {
-            return -1;
-        }
-
-        int start = 0;
-        int end = bound;
-
+        int start = 0, end = upperBound;
         while (start + 1 < end) {
             int mid = start + (end - start) / 2;
-
-            if (reader[mid] == target) {
-                return mid;
-            }
-            else if (reader[mid] > target) {
-                end = mid;
-            }
-            else {
+            if (reader.get(mid) < target) {
                 start = mid;
             }
+            else {
+                end = mid;
+            }
         }
 
-        if (reader[end] == target) {
-            return end;
-        }
-        if (reader[start] == target) {
+        if (reader.get(start) == target) {
             return start;
+        }
+        if (reader.get(end) == target) {
+            return end;
         }
 
         return -1;
     }
 
-    public static void main(String[] args) {
-        LC447 lc447 = new LC447();
+    private int findUpperBound(ArrayReader reader, int target) {
+        int index = 1;
+        while (reader.get(index - 1) < target) {
+            index = index * 2;
+        }
 
-        int[] reader = {1,3,6,9,21, 2147483647};
-        int target = 9;
-
-        System.out.println(lc447.searchBigSortedArray(reader, target));
+        return index;
     }
 }
