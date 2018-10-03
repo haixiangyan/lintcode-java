@@ -4,13 +4,12 @@ public class LC41 {
             return 0;
         }
 
-        int sum = 0, minSum = 0, maxSum = Integer.MIN_VALUE;
+        int max = Integer.MIN_VALUE, sum = 0, minSum = 0;
         for (int i = 0; i < nums.length; i++) {
             sum = sum + nums[i];
-            maxSum = Math.max(maxSum, sum - minSum);
-            minSum = Math.min(sum, minSum);
+            max = Math.max(max, sum - minSum);
+            minSum = Math.min(minSum, sum);
         }
-
-        return maxSum;
+        return max;
     }
 }
