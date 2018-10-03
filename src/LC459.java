@@ -1,33 +1,36 @@
 public class LC459 {
     public int closestNumber(int[] A, int target) {
-        if (A.length == 0) {
-            return -1;
+        int firstPos = findFirstPos(A, target);
+        if (firstPos == 0) {
+            return 0;
         }
-
-        int start = 0;
-        int end = A.length - 1;
-
-        while (start + 1 < end) {
-            int mid = start + (end - start) / 2;
-
-            if (A[mid] < target) {
-                start = mid;
-            }
-            else {
-                end = mid;
-            }
+        if (firstPos == A.length) {
+            return A.length - 1;
         }
-
-        return Math.abs(A[start] - target) > Math.abs(A[end] - target) ? end : start;
+        if (A[firstPos] - target > target - A[firstPos - 1]) {
+            return firstPos - 1;
+        }
+        return firstPos;
     }
 
-    public static void main(String[] args) {
-        int[] A = {1, 3, 3, 4};
+    private int findFirstPos(int[] A, int target) {
+        int start = 0, end = A.length - 1;
+        while (start + 1 < end) {
+            int mid = start + (end - start) / 2;
+            if (target <= A[mid]) {
+                end = mid;
+            }
+            else {
+                start = mid;
+            }
+        }
 
-        int target = 3;
-
-        LC459 lc459 = new LC459();
-
-        System.out.println(lc459.closestNumber(A, target));
+        if (target <= A[start]) {
+            return start;
+        }
+        if (target <= A[end]) {
+            return end;
+        }
+        return A.length;
     }
 }
