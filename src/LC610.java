@@ -3,69 +3,51 @@ import java.util.Comparator;
 
 public class LC610 {
     class Pair {
-        public int index, num;
-
-        public Pair(int index, int num) {
+        public int index;
+        public int value;
+        public Pair(int index, int value) {
             this.index = index;
-            this.num = num;
+            this.value = value;
         }
     }
 
     public int[] twoSum7(int[] nums, int target) {
-        if (nums.length == 0) {
-            return new int[0];
+        int[] results = new int[2];
+        if (nums == null || nums.length < 2) {
+            return results;
         }
 
-        // Store info for mapping
+        target = Math.abs(target);
+
         Pair[] pairs = new Pair[nums.length];
-        for (int i = 0; i < pairs.length; i++) {
+        for (int i = 0; i < nums.length; i++) {
             pairs[i] = new Pair(i, nums[i]);
         }
 
-        // Sort original array
         Arrays.sort(pairs, new Comparator<Pair>() {
             @Override
-            public int compare(Pair p1, Pair p2) {
-                return p1.num - p2.num;
+            public int compare(Pair o1, Pair o2) {
+                return o1.value - o2.value;
             }
         });
 
-        int i = 0;
-        int j = 0;
-
-        while (i < pairs.length) {
-            while (j < pairs.length) {
-                if (pairs[j].num - pairs[i].num == target) {
-                    // Skip for nums[i] - nums[i]
-                    if (i == j) {
-                        break;
-                    }
-                    // Find the result
-                    return new int[]{
-                            Math.min(pairs[i].index + 1, pairs[j].index + 1),
-                            Math.max(pairs[i].index + 1, pairs[j].index + 1)
-                    };
-                } else if (pairs[j].num - pairs[i].num > target) {
-                    // j is going to far and can't find the answer before head
+        for (int i = 0; i < pairs.length; i++) {
+            int j = i + 1;
+            while (j < nums.length) {
+                if (pairs[j].value - pairs[i].value < target) {
+                    j++;
+                }
+                else if (pairs[j].value - pairs[i].value > target) {
                     break;
                 }
-                j++;
+                else {
+                    results[0] = Math.min(pairs[i].index + 1, pairs[j].index + 1);
+                    results[1] = Math.max(pairs[i].index + 1, pairs[j].index + 1);
+                    return results;
+                }
             }
-            i++;
         }
 
-        return new int[0];
-    }
-
-    public static void main(String[] args) {
-        int[] nums = {1,0,1};
-        int target = 0;
-
-        LC610 lc610 = new LC610();
-
-        int[] results = lc610.twoSum7(nums, target);
-        for (int i : results) {
-            System.out.println(i);
-        }
+        return results;
     }
 }
