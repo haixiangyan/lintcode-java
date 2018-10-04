@@ -1,47 +1,19 @@
 public class LC604 {
     public int[] winSum(int[] nums, int k) {
-        int[] sums = new int[nums.length - k + 1];
-
-        if (nums.length == 0 ||nums.length < k) {
+        if (nums == null || nums.length == 0) {
             return new int[0];
         }
 
-        int sum = 0;
-
-        // Add up font k elements
+        int[] sums = new int[nums.length - k + 1];
+        // Init sums[0]
         for (int i = 0; i < k; i++) {
-            sum = sum + nums[i];
+            sums[0] += nums[i];
         }
-        sums[0] = sum;
-
-        // Move to next
-        int left = 0;
-        int right = k; // Right index
-        int count = 1;
-
-        while (right < nums.length) {
-            // Sub left element and add right element
-            sum = sum - nums[left] + nums[right];
-            sums[count] = sum;
-
-            left ++;
-            right ++;
-            count ++;
+        // Get all sums
+        for (int i = 1; i < sums.length; i++) {
+            sums[i] = sums[i - 1] - nums[i - 1] + nums[i + k - 1];
         }
 
         return sums;
-    }
-
-    public static void main(String[] args) {
-        int[] nums = {1, 2, 7, 8, 5};
-        int k = 1;
-
-        LC604 lc604 = new LC604();
-
-        int[] results = lc604.winSum(nums, k);
-
-        for (int i : results) {
-            System.out.println(i);
-        }
     }
 }
