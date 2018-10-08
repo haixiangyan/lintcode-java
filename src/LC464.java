@@ -4,26 +4,23 @@ public class LC464 {
             return;
         }
 
-        quickSort(A, 0, A.length - 1);
+        quicksort(A, 0, A.length - 1);
     }
 
-    private void quickSort(int[] A, int start, int end) {
+    private void quicksort(int[] A, int start, int end) {
         if (start >= end) {
-            return ;
+            return;
         }
 
-        int left = start;
-        int right = end;
+        int left = start, right = end;
         int pivot = A[(start + end) / 2];
-
         while (left <= right) {
             while (left <= right && A[left] < pivot) {
                 left++;
             }
-            while (left <= right && A[right] > pivot) {
+            while (left <= right && pivot < A[right]) {
                 right--;
             }
-
             if (left <= right) {
                 int temp = A[left];
                 A[left] = A[right];
@@ -33,19 +30,7 @@ public class LC464 {
             }
         }
 
-        quickSort(A, start, right);
-        quickSort(A, left, end);
-    }
-
-    public static void main(String[] args) {
-        int[] A = {3, 2, 1, 4, 5};
-
-        LC464 lc464 = new LC464();
-
-        lc464.sortIntegers2(A);
-
-        for (int i : A) {
-            System.out.println(i);
-        }
+        quicksort(A, start, right);
+        quicksort(A, left, end);
     }
 }
