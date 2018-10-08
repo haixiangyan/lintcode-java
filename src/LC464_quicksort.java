@@ -1,4 +1,4 @@
-public class LC464 {
+public class LC464_quicksort {
     public void sortIntegers2(int[] A) {
         if (A == null || A.length == 0) {
             return;
