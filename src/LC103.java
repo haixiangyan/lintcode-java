@@ -10,36 +10,27 @@ public class LC103 {
     }
 
     public ListNode detectCycle(ListNode head) {
-        ListNode intersection = chase(head);
-        // No cycle
-        if (intersection == null) {
+        if (head == null || head.next == null) {
             return null;
         }
 
-        ListNode line = head;
-        ListNode cycle = intersection;
-
-        while (line != cycle) {
-            line = line.next;
-            cycle = cycle.next;
-        }
-
-        return line;
-    }
-
-    private ListNode chase(ListNode head) {
         ListNode slow = head;
-        ListNode fast = head;
+        ListNode fast = head.next;
+        while (slow != fast) {
+            // No cycle
+            if (fast == null || fast.next == null) {
+                return null;
+            }
 
-        while (fast != null && fast.next != null) {
             slow = slow.next;
             fast = fast.next.next;
-
-            if (slow == fast) {
-                return fast;
-            }
         }
 
-        return null;
+        while (head != slow.next) {
+            head = head.next;
+            slow = slow.next;
+        }
+
+        return head;
     }
 }
