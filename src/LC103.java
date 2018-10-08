@@ -26,7 +26,8 @@ public class LC103 {
             fast = fast.next.next;
         }
 
-        while (head != slow.next) {
+        slow = slow.next;
+        while (head != slow) {
             head = head.next;
             slow = slow.next;
         }

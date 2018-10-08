@@ -10,54 +10,41 @@ public class LC380 {
     }
 
     public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
-        if (headA == null || headB == null) {
+        if (headA == null || headA.next == null) {
             return null;
         }
-        // Link the end of c with headb
-        cycle(headA, headB);
-        // Find the intersection point
-        ListNode intersection = chase(headA);
-        // No cycle
-        if (intersection == null) {
-            return null;
-        }
-        // Find the entrance
-        return findEntrance(headA, intersection);
-    }
 
-    private void cycle(ListNode headA, ListNode headB) {
-        ListNode p = headA;
-
-        while (p.next != null) {
-            p = p.next;
+        ListNode node = headA;
+        while (node.next != null) {
+            node = node.next;
         }
 
-        // Find the end of linked list c
-        p.next = headB;
+        // Link C and B
+        node.next = headB;
+        ListNode result = findEntrance(headA);
+        node.next = null;
+        return result;
     }
 
-    private ListNode chase(ListNode headA) {
-        ListNode slow = headA;
-        ListNode fast = headA;
+    private ListNode findEntrance(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head.next;
 
-        while (fast != null && fast.next != null) {
+        while (slow != fast) {
+            // No cycle
+            if (fast == null || fast.next == null) {
+                return null;
+            }
             slow = slow.next;
             fast = fast.next.next;
-
-            if (slow == fast) {
-                return fast;
-            }
         }
 
-        return null;
-    }
-
-    private ListNode findEntrance(ListNode line, ListNode cycle) {
-        while (line != cycle) {
-            line = line.next;
-            cycle = cycle.next;
+        slow = head;
+        fast = fast.next;
+        while (slow != fast) {
+            slow = slow.next;
+            fast = fast.next;
         }
-
-        return line;
+        return slow;
     }
 }
