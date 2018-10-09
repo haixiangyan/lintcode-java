@@ -1,12 +1,10 @@
 public class LC31 {
     public int partitionArray(int[] nums, int k) {
         if (nums == null || nums.length == 0) {
-            return 0;
+            return -1;
         }
 
-        int left = 0;
-        int right = nums.length - 1;
-
+        int left = 0, right = nums.length - 1;
         while (left <= right) {
             while (left <= right && nums[left] < k) {
                 left++;
@@ -24,19 +22,6 @@ public class LC31 {
             }
         }
 
-        return right + 1;
-    }
-
-    public static void main(String[] args) {
-        int[] nums = {3, 2, 2, 1};
-        int k = 2;
-
-        LC31 lc30 = new LC31();
-
-        System.out.println(lc30.partitionArray(nums, k));
-
-        for (int i : nums) {
-            System.out.println(i);
-        }
+        return left;
     }
 }
