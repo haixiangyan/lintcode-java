@@ -4,66 +4,52 @@ import java.util.List;
 
 public class LC57 {
     public List<List<Integer>> threeSum(int[] numbers) {
-        List<List<Integer>> lists = new ArrayList<>();
-        // Sort Array
+        List<List<Integer>> results = new ArrayList<>();
+
+        if (numbers == null || numbers.length == 0) {
+            return results;
+        }
+
         Arrays.sort(numbers);
 
-        // Find a + b + c = 0 => a + b = -c
         for (int i = 0; i < numbers.length - 2; i++) {
             if (i > 0 && numbers[i] == numbers[i - 1]) {
                 continue;
             }
 
-            // numbers[i] = c
-            int left = i + 1;
-            int right = numbers.length - 1;
+            int left = i + 1, right = numbers.length - 1;
+            int target = -numbers[i];
+            twoSum(numbers, left, right, target, results);
+        }
 
-            while (left < right) {
-                if (numbers[left] + numbers[right] > -numbers[i]) {
-                    right--;
-                } else if (numbers[left] + numbers[right] < -numbers[i]) {
-                    left++;
-                } else {
-                    lists.add(combine(numbers[left], numbers[right], numbers[i]));
-                    left++;
-                    right--;
+        return results;
+    }
 
-                    while (left < right && numbers[left] == numbers[left - 1]) {
-                        left++;
-                    }
-                    while (left < right && numbers[right] == numbers[right + 1]) {
-                        right--;
-                    }
+    private void twoSum(int[] numbers, int left, int right, int target, List<List<Integer>> results) {
+        List<Integer> trible;
+        while (left < right) {
+            if (numbers[left] + numbers[right] == target) {
+                trible = new ArrayList<>();
+                trible.add(target);
+                trible.add(numbers[left]);
+                trible.add(numbers[right]);
+                results.add(trible);
+
+                left++;
+                right--;
+
+                while (left < right && numbers[left] == numbers[left - 1]) {
+                    left++;
+                }
+                while (left < right && numbers[right] == numbers[right + 1]) {
+                    right--;
                 }
             }
-        }
-        return lists;
-    }
-
-    private ArrayList<Integer> combine(int a, int b, int c) {
-        ArrayList<Integer> list = new ArrayList<>();
-
-        int max = Math.max(a, Math.max(b, c));
-        int min = Math.min(a, Math.min(b, c));
-
-        list.add(min);
-        list.add(a + b + c - max - min);
-        list.add(max);
-
-        return list;
-    }
-
-    public static void main(String[] args) {
-        int[] numbers = {-1, 0, 1};
-
-        LC57 lc57 = new LC57();
-
-        List<List<Integer>> lists = lc57.threeSum(numbers);
-
-        for (List<Integer> list : lists) {
-            System.out.println("----");
-            for (Integer i : list) {
-                System.out.println(i);
+            else if (numbers[left] + numbers[right] > target) {
+                right--;
+            }
+            else {
+                left++;
             }
         }
     }
