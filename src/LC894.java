@@ -1,10 +1,9 @@
-class FlipTool {
-    public static void flip(int[] arr, int i) {
-
-    }
-}
-
 public class LC894 {
+    static class FlipTool {
+        public static void flip(int[] arr, int i) {
+
+        }
+    }
     public void pancakeSort(int[] array) {
         if (array == null || array.length == 0) {
             return;
