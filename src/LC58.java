@@ -5,79 +5,60 @@ import java.util.List;
 
 public class LC58 {
     public List<List<Integer>> fourSum(int[] numbers, int target) {
-        if (numbers == null || numbers.length <= 3) {
-            return new ArrayList<>();
+        List<List<Integer>> results = new ArrayList<>();
+        if (numbers == null || numbers.length < 4) {
+            return results;
         }
 
         Arrays.sort(numbers);
-
-        List<List<Integer>> lists = new ArrayList<>();
 
         for (int i = 0; i < numbers.length - 3; i++) {
             if (i > 0 && numbers[i] == numbers[i - 1]) {
                 continue;
             }
-            threeSum(numbers, target - numbers[i], i + 1, lists, numbers[i]);
+
+            threeSum(numbers, numbers[i], i + 1, target, results);
         }
 
-        return lists;
+        return results;
     }
 
-    private void threeSum(int[] numbers, int target, int start, List<List<Integer>> lists, int curNum) {
+    private void threeSum(int[] numbers, int firstNum, int start, int target, List<List<Integer>> results) {
         for (int i = start; i < numbers.length - 2; i++) {
             if (i > start && numbers[i] == numbers[i - 1]) {
                 continue;
             }
-            int left = i + 1;
-            int right = numbers.length - 1;
-            int newTarget = target - numbers[i];
 
-            while (left < right) {
-                if (numbers[left] + numbers[right] < newTarget) {
-                    left++;
-                }
-                else if (numbers[left] + numbers[right] > newTarget) {
-                    right--;
-                }
-                else {
-                    List<Integer> list = new ArrayList<>();
-                    list.add(numbers[left]);
-                    list.add(numbers[right]);
-                    list.add(numbers[i]);
-                    list.add(curNum);
-                    list.sort(new Comparator<Integer>() {
-                        @Override
-                        public int compare(Integer o1, Integer o2) {
-                            return o1 - o2;
-                        }
-                    });
-                    lists.add(list);
-                    left++;
-                    right--;
-                    // Remove duplicate
-                    while (left < right && numbers[left] == numbers[left - 1]) {
-                        left++;
-                    }
-                    while (left < right && numbers[right] == numbers[right + 1]) {
-                        right--;
-                    }
-                }
-            }
+            twoSum(numbers, firstNum, numbers[i], i + 1, numbers.length - 1, target, results);
         }
     }
 
-    public static void main(String[] args) {
-        int[] numbers = {1,0,-1,-1,-1,-1,0,1,1,1,2};
-        int target = 2;
+    private void twoSum(int[] numbers, int firstNum, int secondNum, int left, int right, int target, List<List<Integer>> results) {
+        while (left < right) {
+            int sum = firstNum + secondNum + numbers[left] + numbers[right];
+            if (sum < target) {
+                left++;
+            }
+            else if (sum > target) {
+                right--;
+            }
+            else {
+                List<Integer> list = new ArrayList<>();
+                list.add(firstNum);
+                list.add(secondNum);
+                list.add(numbers[left]);
+                list.add(numbers[right]);
 
-        LC58 lc58 = new LC58();
+                results.add(list);
+                left++;
+                right--;
 
-        List<List<Integer>> lists = lc58.fourSum(numbers, target);
-
-        for (List<Integer> list : lists) {
-            System.out.println("\n---");
-            for (Integer i : list) {
-                System.out.print(i);
+                while (left < right && numbers[left] == numbers[left - 1]) {
+                    left++;
+                }
+                while (left < right && numbers[right] == numbers[right + 1]) {
+                    right--;
+                }
             }
         }
     }
