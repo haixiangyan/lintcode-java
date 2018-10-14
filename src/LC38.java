@@ -1,10 +1,10 @@
 public class LC38 {
     public int searchMatrix(int[][] matrix, int target) {
         if (matrix == null || matrix.length == 0) {
-            return -1;
+            return 0;
         }
         if (matrix[0] == null || matrix[0].length == 0) {
-            return -1;
+            return 0;
         }
 
         int count = 0;
