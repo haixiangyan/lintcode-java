@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 public class LC127 {
     class DirectedGraphNode {
@@ -15,43 +12,58 @@ public class LC127 {
     }
 
     public ArrayList<DirectedGraphNode> topSort(ArrayList<DirectedGraphNode> graph) {
-        HashMap<DirectedGraphNode, Integer> map = new HashMap<>();
-        // Record indegree of each node
-        for (DirectedGraphNode node : graph) {
-            for (DirectedGraphNode neighbor : node.neighbors) {
-                if (map.containsKey(neighbor)) {
-                    map.put(neighbor, map.get(neighbor) + 1);
-                } else {
-                    map.put(neighbor, 1);
-                }
-            }
-        }
+        // Get all nodes' indegreees
+        Map<DirectedGraphNode, Integer> indegrees = getIndegrees(graph);
 
-        // Initialize queue
-        ArrayList<DirectedGraphNode> result = new ArrayList<>();
+        // Init results list
+        ArrayList<DirectedGraphNode> results = new ArrayList<>();
+
+        // Init queue
         Queue<DirectedGraphNode> queue = new LinkedList<>();
+        initQueue(graph, indegrees, queue, results);
+
+        // sorting
+        startSorting(queue, indegrees, results);
+
+        return results;
+    }
+
+    private Map<DirectedGraphNode, Integer> getIndegrees(ArrayList<DirectedGraphNode> graph) {
+        Map<DirectedGraphNode, Integer> indegrees = new HashMap<>();
+
         for (DirectedGraphNode node : graph) {
-            if (!map.containsKey(node)) {
-                result.add(node);
-                queue.add(node);
+            // Find neighbor
+            for (DirectedGraphNode neighbor : node.neighbors) {
+                indegrees.put(neighbor, indegrees.getOrDefault(neighbor,0) + 1);
             }
         }
 
-        // Sorting
+        return indegrees;
+    }
+
+    private void initQueue(
+            ArrayList<DirectedGraphNode> graph,
+            Map<DirectedGraphNode, Integer> indegrees,
+            Queue<DirectedGraphNode> queue,
+            List<DirectedGraphNode> results)  {
+        for (DirectedGraphNode node : graph) {
+            if (!indegrees.containsKey(node)) {
+                queue.add(node);
+                results.add(node);
+            }
+        }
+    }
+
+    private void startSorting(Queue<DirectedGraphNode> queue, Map<DirectedGraphNode, Integer> indegrees, List<DirectedGraphNode> results) {
         while (!queue.isEmpty()) {
-            // Pop one node
             DirectedGraphNode node = queue.poll();
-            // Find the neighbors
-            for (DirectedGraphNode neighbor : node.neighbors) {
-                // Decrease the indegree
-                map.put(neighbor, map.get(neighbor) - 1);
-                if (map.get(neighbor) == 0) {
-                    result.add(neighbor);
-                    queue.add(neighbor);
+            for (DirectedGraphNode n : node.neighbors) {
+                indegrees.put(n, indegrees.get(n) - 1);
+                if (indegrees.get(n) == 0) {
+                    results.add(n);
+                    queue.add(n);
                 }
             }
         }
-
-        return result;
     }
 }
