@@ -17,58 +17,50 @@ public class LC433 {
             return 0;
         }
 
-        int n = grid.length;
-        int m = grid[0].length;
-
-        int islands = 0;
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
+        int row = grid.length, col = grid[0].length;
+        int island = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                // If it is an island
                 if (grid[i][j]) {
-                    markByBFS(grid, i, j);
-                    islands++;
+                    bfs(grid, i, j);
+                    island++;
                 }
             }
         }
-
-        return islands;
+       return island;
     }
 
-    private void markByBFS(boolean[][] grid, int x, int y) {
-        int[] directionX = {1, 0, -1, 0};
-        int[] directionY = {0, 1, 0, -1};
+    private void bfs(boolean[][] grid, int x, int y) {
+        int[] dx = {1, 0, -1, 0};
+        int[] dy = {0, -1, 0, 1};
+
         Queue<Coordinate> queue = new LinkedList<>();
 
-        queue.offer(new Coordinate(x, y));
+        queue.add(new Coordinate(x, y));
         grid[x][y] = false;
 
         while (!queue.isEmpty()) {
-            Coordinate curNode = queue.poll();
-
-            // Search for 4 adj nodes
+            Coordinate coordinate = queue.poll();
+            // Get adj node
             for (int i = 0; i < 4; i++) {
-                Coordinate adjNode = new Coordinate(
-                        curNode.x + directionX[i],
-                        curNode.y + directionY[i]
+                Coordinate adjCoordinate = new Coordinate(
+                        coordinate.x + dx[i],
+                        coordinate.y + dy[i]
                 );
-
-                // Skip invalid adj node
-                if (!inBound(grid, adjNode)) {
+                if (!isBound(grid, adjCoordinate)) {
                     continue;
                 }
-
-                if (grid[adjNode.x][adjNode.y]) {
-                    grid[adjNode.x][adjNode.y] = false;
-                    queue.offer(adjNode);
+                if (grid[adjCoordinate.x][adjCoordinate.y]) {
+                    grid[adjCoordinate.x][adjCoordinate.y] = false;
+                    queue.add(adjCoordinate);
                 }
             }
         }
     }
-
-    private boolean inBound(boolean[][] grid, Coordinate node) {
-        int n = grid.length;
-        int m = grid[0].length;
-
-        return (node.x >= 0) && (node.x < n) && (node.y >= 0) && (node.y < m);
+    
+    private boolean isBound(boolean[][] grid, Coordinate adjCoordinate) {
+        int row = grid.length, col = grid[0].length;
+        return (0 <= adjCoordinate.x && adjCoordinate.x <= row - 1) && (0 <= adjCoordinate.y && adjCoordinate.y <= col - 1);
     }
 }
