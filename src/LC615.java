@@ -1,44 +1,46 @@
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 public class LC615 {
     public boolean canFinish(int numCourses, int[][] prerequisites) {
-        List<Integer>[] nodes = new List[numCourses];
-        int[] indegree = new int[numCourses];
+        int[] indegrees = new int[numCourses];
 
-        // Initialize graph
+        // Init nodes
+        ArrayList[] nodes = new ArrayList[numCourses];
         for (int i = 0; i < numCourses; i++) {
-            nodes[i] = new ArrayList<Integer>();
+            nodes[i] = new ArrayList<>();
         }
+
+        // Build graph
         for (int i = 0; i < prerequisites.length; i++) {
-            indegree[prerequisites[i][0]]++;
+            indegrees[prerequisites[i][0]]++;
             nodes[prerequisites[i][1]].add(prerequisites[i][0]);
         }
 
-        // Topological sorting
         Queue<Integer> queue = new LinkedList<>();
-        for (int i = 0; i < numCourses; i++) {
-            if (indegree[i] == 0) {
-                queue.offer(i);
+        for (int i = 0; i < indegrees.length; i++) {
+            if (indegrees[i] == 0) {
+                queue.add(i);
             }
         }
 
-        int courses = 0;
-
+        int count = 0;
         while (!queue.isEmpty()) {
-            Integer node = queue.poll();
-            courses++;
+            int curCourse = queue.poll();
+            count++;
 
-            for (Integer i : nodes[node]) {
-                indegree[i]--;
-                if (indegree[i] == 0) {
-                    queue.offer(i);
+            // Sub 1 for this children
+            for (int i = 0; i < nodes[curCourse].size(); i++) {
+                int nextCourse = (int) nodes[curCourse].get(i);
+                indegrees[nextCourse]--;
+                if (indegrees[nextCourse] == 0) {
+                    queue.add(nextCourse);
                 }
             }
         }
 
-        return courses == numCourses;
+        return count == numCourses;
     }
 }
