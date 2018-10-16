@@ -2,8 +2,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class LC611 {
-    static class Point {
-        int x;
+    static class Point { int x;
         int y;
 
         Point() {
@@ -17,71 +16,54 @@ public class LC611 {
         }
     }
 
+    private int[] dx = {2, 1, -1, -2, -2, -1, 1, 2};
+    private int[] dy = {1, 2, 2, 1, -1, -2, -2, -1};
+    private int row;
+    private int col;
+
     public int shortestPath(boolean[][] grid, Point source, Point destination) {
-        int[] directionX = {1, 1, -1, -1, 2, 2, -2, -2};
-        int[] directionY = {2, -2, 2, -2, 1, -1, 1, -1};
+        row = grid.length;
+        col = grid[0].length;
+
         Queue<Point> queue = new LinkedList<>();
+        queue.add(source);
 
         int steps = 0;
-
-        queue.offer(source);
-
         while (!queue.isEmpty()) {
             int size = queue.size();
-
             for (int i = 0; i < size; i++) {
                 Point curPoint = queue.poll();
                 if (curPoint.x == destination.x && curPoint.y == destination.y) {
                     return steps;
                 }
-
+                // Find its next step
                 for (int j = 0; j < 8; j++) {
-                    Point point = new Point(
-                            curPoint.x + directionX[j],
-                            curPoint.y + directionY[j]
+                    Point nextPoint = new Point(
+                            curPoint.x + dx[j],
+                            curPoint.y + dy[j]
                     );
-
-                    // Skip invalid point
-                    if (!isInBound(grid, point)) {
+                    if (!isBound(grid, nextPoint)) {
                         continue;
                     }
 
-                    queue.offer(point);
-                    grid[point.x][point.y] = true;
+                    queue.add(nextPoint);
+                    grid[nextPoint.x][nextPoint.y] = true;
                 }
             }
+            // 加入了当前的层之后才能算是走了一步
             steps++;
         }
 
         return -1;
     }
 
-    private boolean isInBound(boolean[][] grid, Point point) {
-        int maxRow = grid.length;
-        int maxCol = grid[0].length;
-
-        if (point.x < 0 || point.x >= maxRow) {
+    private boolean isBound(boolean[][] grid, Point nextPoint) {
+        if (0 > nextPoint.x || nextPoint.x >= row) {
             return false;
         }
-        if (point.y < 0 || point.y >= maxCol) {
+        if (0 > nextPoint.y || nextPoint.y >= col) {
             return false;
         }
-
-        return !grid[point.x][point.y];
-    }
-
-    public static void main(String[] args) {
-        Point source = new Point(2, 0);
-        Point destination = new Point(2, 2);
-
-        boolean[][] grid = {
-                {false, true, false},
-                {false, false, false},
-                {false, false, false}
-        };
-
-        LC611 lc611 = new LC611();
-
-        System.out.println(lc611.shortestPath(grid, source, destination));
+        return !grid[nextPoint.x][nextPoint.y];
     }
 }
