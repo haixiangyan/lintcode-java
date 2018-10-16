@@ -5,50 +5,45 @@ import java.util.Queue;
 
 public class LC616 {
     public int[] findOrder(int numCourses, int[][] prerequisites) {
-        List<Integer>[] graph = new ArrayList[numCourses];
+        ArrayList[] graph = new ArrayList[numCourses];
         int[] indegrees = new int[numCourses];
 
-        int orderCounter = 0;
-        int[] order = new int[numCourses];
-
         for (int i = 0; i < numCourses; i++) {
-            graph[i] = new ArrayList<>();
+            graph[i] = new ArrayList();
         }
 
-        // Graph construction
         for (int i = 0; i < prerequisites.length; i++) {
-            graph[prerequisites[i][1]].add(prerequisites[i][0]);
             indegrees[prerequisites[i][0]]++;
+            graph[prerequisites[i][1]].add(prerequisites[i][0]);
         }
 
-        // Initialize queue
         Queue<Integer> queue = new LinkedList<>();
-        for (int i = 0; i < numCourses; i++) {
+        for (int i = 0; i < indegrees.length; i++) {
             if (indegrees[i] == 0) {
-                queue.offer(i);
+                queue.add(i);
             }
         }
 
-        // Topological sorting
+        int[] order = new int[numCourses];
+        int index = 0;
         while (!queue.isEmpty()) {
-            Integer curNode = queue.poll();
+            int curCourse = queue.poll();
+            order[index++] = curCourse;
 
-            order[orderCounter] = curNode;
-            orderCounter++;
+            // Find courses that it points to
+            for (int i = 0; i < graph[curCourse].size(); i++) {
 
-            // Check for its adj nodes
-            for (Integer adjNode : graph[curNode]) {
-                indegrees[adjNode]--;
-                if (indegrees[adjNode] == 0) {
-                    queue.offer(adjNode);
+                int nextCourse = (int) graph[curCourse].get(i);
+                indegrees[nextCourse]--;
+                if (indegrees[nextCourse] == 0) {
+                    queue.add(nextCourse);
                 }
             }
         }
 
-        if (orderCounter != numCourses) {
-            return new int[0];
+        if (index == numCourses) {
+            return order;
         }
-
-        return order;
+        return new int[0];
     }
 }
