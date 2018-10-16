@@ -2,69 +2,95 @@ import java.util.*;
 
 public class LC605 {
     public boolean sequenceReconstruction(int[] org, int[][] seqs) {
-        Map<Integer, Set<Integer>> map = new HashMap<>();
-        Map<Integer, Integer> indegree = new HashMap<>();
+        Map<Integer, Set<Integer>> graph = new HashMap<>();
+        Map<Integer, Integer> indegrees = new HashMap<>();
 
-        // Initialize graph
-        for (int i = 0; i < org.length; i++) {
-            map.put(org[i], new HashSet<>());
-            indegree.put(org[i], 0);
-        }
+        // Init graph
+        initGraph(org, graph, indegrees);
 
-        // Construct graph
+        // Build graph
         int n = org.length;
-        int count = 0;
-        for (int[] seq : seqs) {
-            count = count + seq.length;
-            if (seq.length >= 1 && (seq[0] <= 0 || seq[0] > n)) {
-                return false;
-            }
-            for (int i = 1; i < seq.length; i++) {
-                if (seq[i] <= 0 || seq[i] > n) {
-                    return false;
-                }
-                if (map.get(seq[i - 1]).add(seq[i])) {
-                    indegree.put(seq[i], indegree.get(seq[i]) + 1);
-                }
-            }
+        int seqLength = buildGraph(n, seqs, graph, indegrees);
+        if (seqLength == -1) {
+            return false;
         }
 
-        if (count < n) {
+        // Check edge case
+        if (seqLength < n) {
             return false;
         }
 
         // Topological sorting
-        Queue<Integer> queue = new LinkedList<>();
-        for (int key : indegree.keySet()) {
-            if (indegree.get(key) == 0) {
-                queue.add(key);
-            }
-        }
+        int count = topSort(org, graph, indegrees);
 
-        int cnt = 0;
-        while (queue.size() == 1) {
-            int ele = queue.poll();
-            for (int next : map.get(ele)) {
-                indegree.put(next, indegree.get(next) - 1);
-                if (indegree.get(next) == 0) {
-                    queue.add(next);
-                }
-            }
-            if (ele != org[cnt]) {
-                return false;
-            }
-            cnt++;
-        }
-        return cnt == org.length;
+        return count == org.length;
     }
 
-    public static void main(String[] args) {
-        int[] org = {1, 2, 3};
-        int[][] seqs = {
-                {1, 2}, {1, 3}, {2, 3}
-        };
+    private void initGraph(int[] org, Map<Integer, Set<Integer>> graph, Map<Integer, Integer> indegrees) {
+        for (int num : org) {
+            graph.put(num, new HashSet<>());
+            indegrees.put(num, 0);
+        }
+    }
 
-        LC605 lc605 = new LC605();
-        System.out.println(lc605.sequenceReconstruction(org, seqs));
+    private int buildGraph(
+            int n,
+            int[][] seqs,
+            Map<Integer, Set<Integer>> graph,
+            Map<Integer, Integer> indegrees
+    ) {
+        int count = 0;
+        for (int[] seq : seqs) {
+            count = count + seq.length;
+            // Check the first element whether is invalid
+            if (seq.length >= 1 && (seq[0] <= 0 || seq[0] > n)) {
+                return -1;
+            }
+            for (int i = 1; i < seq.length; i++) {
+                // Check if each element is valid
+                if (seq[i] <= 0 || seq[i] > n) {
+                    return -1;
+                }
+                if (graph.get(seq[i - 1]).add(seq[i])) {
+                    indegrees.put(seq[i], indegrees.get(seq[i]) + 1);
+                }
+            }
+        }
+        return count;
+    }
+
+    private int topSort(
+            int[] org,
+            Map<Integer, Set<Integer>> graph,
+            Map<Integer, Integer> indegrees
+    ) {
+        int index = 0;
+        Queue<Integer> queue = new LinkedList<>();
+
+        for (Integer num : indegrees.keySet()) {
+            if (indegrees.get(num) == 0) {
+                queue.add(num);
+            }
+        }
+
+        while (queue.size() == 1) {
+            int curNum = queue.poll();
+
+            // Find its neighbors and sub - 1 for their indegrees
+            for (int nextNum : graph.get(curNum)) {
+                indegrees.put(nextNum, indegrees.get(nextNum) - 1);
+                if (indegrees.get(nextNum) == 0) {
+                    queue.add(nextNum);
+                }
+            }
+
+            // Check if curNum suit org sequence
+            if (curNum != org[index]) {
+                return -1;
+            }
+            index++;
+        }
+
+        return index;
     }
 }
