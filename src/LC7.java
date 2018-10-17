@@ -13,78 +13,67 @@ public class LC7 {
 
     public String serialize(TreeNode root) {
         if (root == null) {
-            return new ArrayList<>().toString();
+            return "{}";
         }
-        List<String> result = new ArrayList<>();
-        Queue<TreeNode> queue = new LinkedList<>();
 
-        result.add(String.valueOf(root.val));
-        queue.offer(root);
+        Queue<TreeNode> queue = new LinkedList<>();
+        StringBuffer sb = new StringBuffer();
+
+        queue.add(root);
+        sb.append("{");
 
         while (!queue.isEmpty()) {
-            int size = queue.size();
-            for (int i = 0; i < size; i++) {
-                TreeNode node = queue.poll();
-                if (node == null) {
-                    continue;
-                }
+            TreeNode curNode = queue.poll();
+            if (curNode == null) {
+                sb.append("#");
+            }
+            else {
+                sb.append(curNode.val);
+                queue.add(curNode.left);
+                queue.add(curNode.right);
+            }
 
-                // Left
-                if (node.left != null) {
-                    queue.offer(node.left);
-                    result.add(String.valueOf(node.left.val));
-                }
-                else {
-                    queue.offer(null);
-                    result.add("#");
-                }
-
-                // Right
-                if (node.right != null) {
-                    queue.offer(node.right);
-                    result.add(String.valueOf(node.right.val));
-                }
-                else {
-                    queue.offer(null);
-                    result.add("#");
-                }
+            if (!queue.isEmpty()) {
+                sb.append(",");
             }
         }
 
-        return result.toString();
+        sb.append("}");
+
+        return sb.toString();
     }
 
     public TreeNode deserialize(String data) {
-        if (data.equals("[]")) {
+        if (data == null || data.equals("{}")) {
             return null;
         }
-        String[] vals = data.substring(1, data.length() - 1).split(", ");
-        ArrayList<TreeNode> queue = new ArrayList<TreeNode>();
-        TreeNode root = new TreeNode(Integer.parseInt(vals[0]));
+
+        String[] val = data.substring(1, data.length() - 1).split(",");
+        TreeNode root = new TreeNode(Integer.parseInt(val[0]));
+
+        Queue<TreeNode> queue = new LinkedList<>();
         queue.add(root);
-        int index = 0;
         boolean isLeftChild = true;
-        for (int i = 1; i < vals.length; i++) {
-            if (!vals[i].equals("#")) {
-                TreeNode node = new TreeNode(Integer.parseInt(vals[i]));
+
+        for (int i = 1; i < val.length; i++) {
+            if (!val[i].equals("#")) {
+                TreeNode curNode = queue.peek();
+                TreeNode nextNode = new TreeNode(Integer.parseInt(val[i]));
                 if (isLeftChild) {
-                    queue.get(index).left = node;
-                } else {
-                    queue.get(index).right = node;
+                    curNode.left = nextNode;
                 }
-                queue.add(node);
+                else {
+                    curNode.right = nextNode;
+                }
+
+                queue.add(nextNode);
             }
             if (!isLeftChild) {
-                index++;
+                queue.poll();
             }
             isLeftChild = !isLeftChild;
         }
-        return root;
-    }
 
-    public static void main(String[] args) {
-        LC7 lc7 = new LC7();
-        String data = "[1]";
-        lc7.deserialize(data);
+        return root;
     }
 }
