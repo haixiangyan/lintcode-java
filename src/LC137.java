@@ -13,44 +13,44 @@ public class LC137 {
 
     public UndirectedGraphNode cloneGraph(UndirectedGraphNode node) {
         if (node == null) {
-            return node;
+            return null;
         }
 
-        // Get all nodes
-        ArrayList<UndirectedGraphNode> nodes = getNodes(node);
+        // Get old nodes
+        List<UndirectedGraphNode> nodes = getNodes(node);
 
-        // Copy nodes
-        HashMap<UndirectedGraphNode, UndirectedGraphNode> mapping = new HashMap<>();
-        for (UndirectedGraphNode curNode : nodes) {
-            mapping.put(curNode, new UndirectedGraphNode(curNode.label));
+        // Build mapping relation old -> new
+        Map<UndirectedGraphNode, UndirectedGraphNode> map = new HashMap<>();
+        for (UndirectedGraphNode oldNode : nodes) {
+            map.put(oldNode, new UndirectedGraphNode(oldNode.label));
         }
 
-        // Copy edges (Neighbors)
-        for (UndirectedGraphNode n : nodes) {
-            UndirectedGraphNode newNode = mapping.get(n);
-            for (UndirectedGraphNode neighbor : n.neighbors) {
-                UndirectedGraphNode newNeighbor = mapping.get(neighbor);
+        // Get new neighbors
+        for (UndirectedGraphNode oldNode : nodes) {
+            UndirectedGraphNode newNode = map.get(oldNode);
+            for (UndirectedGraphNode oldNeighbor : oldNode.neighbors) {
+                UndirectedGraphNode newNeighbor = map.get(oldNeighbor);
                 newNode.neighbors.add(newNeighbor);
             }
         }
 
-        return mapping.get(node);
+        return map.get(node);
     }
 
-    private ArrayList<UndirectedGraphNode> getNodes(UndirectedGraphNode startNode) {
+    private ArrayList<UndirectedGraphNode> getNodes(UndirectedGraphNode node) {
         Queue<UndirectedGraphNode> queue = new LinkedList<>();
-        HashSet<UndirectedGraphNode> set = new HashSet<>();
+        Set<UndirectedGraphNode> set = new HashSet<>();
 
-        queue.offer(startNode);
-        set.add(startNode);
+        queue.add(node);
+        set.add(node);
 
         while (!queue.isEmpty()) {
-            UndirectedGraphNode node = queue.poll();
+            UndirectedGraphNode curNode = queue.poll();
 
-            for (UndirectedGraphNode adjNode : node.neighbors) {
-                if (!set.contains(adjNode)) {
-                    queue.offer(adjNode);
-                    set.add(adjNode);
+            for (UndirectedGraphNode neighbor : curNode.neighbors) {
+                if (!set.contains(neighbor)) {
+                    queue.add(neighbor);
+                    set.add(neighbor);
                 }
             }
         }
