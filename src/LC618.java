@@ -18,26 +18,23 @@ public class LC618 {
         Queue<UndirectedGraphNode> queue = new LinkedList<>();
         Set<UndirectedGraphNode> set = new HashSet<>();
 
+        queue.add(node);
         set.add(node);
-        queue.offer(node);
 
         while (!queue.isEmpty()) {
-            int size = queue.size();
-
             UndirectedGraphNode curNode = queue.poll();
             if (values.get(curNode) == target) {
                 return curNode;
             }
 
-            for (int i = 0; i < size; i++) {
-                for (UndirectedGraphNode neighbor : curNode.neighbors) {
-                    if (!set.contains(neighbor)) {
-                        set.add(neighbor);
-                        queue.offer(neighbor);
-                    }
+            for (UndirectedGraphNode neighbor : curNode.neighbors) {
+                if (!set.contains(neighbor)) {
+                    queue.add(neighbor);
+                    set.add(neighbor);
                 }
             }
         }
+
         return null;
     }
 }
