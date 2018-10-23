@@ -8,26 +8,29 @@ public class LC624 {
         Queue<String> queue = new LinkedList<>();
         Set<String> set = new HashSet<>();
 
-        queue.offer(s);
+        queue.add(s);
         set.add(s);
         int min = s.length();
 
         while (!queue.isEmpty()) {
-            s = queue.poll();
+            String curString = queue.poll();
 
-            for (String sub : dict) {
-                int found = s.indexOf(sub);
-
+            // Find next step to remove some strings
+            for (String dictItem : dict) {
+                int found = curString.indexOf(dictItem);
                 while (found != -1) {
-                    String new_s = s.substring(0, found) + s.substring(found + sub.length(), s.length());
-                    if (!set.contains(new_s)) {
-                        if (new_s.length() < min) {
-                            min = new_s.length();
+                    String nextString = curString.substring(0, found) + curString.substring(found + dictItem.length());
+
+                    if (!set.contains(nextString)) {
+                        if (nextString.length() < min) {
+                            min = nextString.length();
                         }
-                        queue.offer(new_s);
-                        set.add(new_s);
+                        queue.add(nextString);
+                        set.add(nextString);
                     }
-                    found = s.indexOf(sub, found + 1);
+
+                    // Remove dict item from found to end
+                    found = curString.indexOf(dictItem, found + 1);
                 }
             }
         }
