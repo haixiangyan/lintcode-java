@@ -21,41 +21,38 @@ public class LC242 {
     }
 
     public List<ListNode> binaryTreeToLists(TreeNode root) {
+        List<ListNode> results = new ArrayList<>();
         if (root == null) {
-            return new ArrayList<>();
+            return results;
         }
-
-        Queue<TreeNode> queue = new LinkedList<>();
-        List<ListNode> lists = new ArrayList<>();
-
-        queue.offer(root);
 
         ListNode dummy = new ListNode(0);
         ListNode lastNode = null;
 
-        while (!queue.isEmpty()) {
-            int size = queue.size();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
 
+        while (!queue.isEmpty()) {
             dummy.next = null;
             lastNode = dummy;
 
+            int size = queue.size();
             for (int i = 0; i < size; i++) {
-                TreeNode node = queue.poll();
-
-                lastNode.next = new ListNode(node.val);
+                TreeNode curNode = queue.poll();
+                lastNode.next = new ListNode(curNode.val);
                 lastNode = lastNode.next;
 
-                if (node.left != null) {
-                    queue.offer(node.left);
+                if (curNode.left != null) {
+                    queue.add(curNode.left);
                 }
-                if (node.right != null) {
-                    queue.offer(node.right);
+                if (curNode.right != null) {
+                    queue.add(curNode.right);
                 }
             }
-            // Add this list to collection
-            lists.add(dummy.next);
+
+            results.add(dummy.next);
         }
 
-        return lists;
+        return results;
     }
 }
