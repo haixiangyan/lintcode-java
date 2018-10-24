@@ -16,30 +16,31 @@ public class LC531 {
             return 0;
         }
 
-        Queue<UndirectedGraphNode> queue = new LinkedList<>();
         Set<UndirectedGraphNode> set = new HashSet<>();
+        Queue<UndirectedGraphNode> queue = new LinkedList<>();
 
-        queue.offer(s);
         set.add(s);
+        queue.add(s);
 
         int steps = 0;
-
         while (!queue.isEmpty()) {
-            steps ++;
             int size = queue.size();
 
             for (int i = 0; i < size; i++) {
                 UndirectedGraphNode curNode = queue.poll();
-                for (UndirectedGraphNode adjNode : curNode.neighbors) {
-                    if (!set.contains(adjNode)) {
-                        if (adjNode == t) {
-                            return steps;
-                        }
-                        queue.offer(adjNode);
-                        set.add(adjNode);
+                if (curNode == t) {
+                    return steps;
+                }
+
+                for (UndirectedGraphNode nextNode : curNode.neighbors) {
+                    if (!set.contains(nextNode)) {
+                        queue.add(nextNode);
+                        set.add(nextNode);
                     }
                 }
             }
+
+            steps++;
         }
 
         return -1;
