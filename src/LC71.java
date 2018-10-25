@@ -15,49 +15,48 @@ public class LC71 {
 
     public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
         List<List<Integer>> results = new ArrayList<>();
-
         if (root == null) {
             return results;
         }
 
-        Stack<TreeNode> curStack = new Stack<>();
-        Stack<TreeNode> nextStack = new Stack<>();
+        Stack<TreeNode> curLevel = new Stack<>();
+        Stack<TreeNode> nextLevel = new Stack<>();
         Stack<TreeNode> temp;
-        boolean isLeftToRight = true;
+        boolean isNormal = true;
 
-        curStack.push(root);
+        curLevel.push(root);
 
-        while (!curStack.isEmpty()) {
-            int size = curStack.size();
-            List<Integer> level = new ArrayList<>();
+        while (!curLevel.isEmpty()) {
+            List<Integer> list = new ArrayList<>();
 
-            for (int i = 0; i < size; i++) {
-                TreeNode curNode = curStack.pop();
-                level.add(curNode.val);
+            while (!curLevel.isEmpty()) {
+                TreeNode curNode = curLevel.pop();
 
-                if (isLeftToRight) {
+                list.add(curNode.val);
+
+                if (isNormal) {
                     if (curNode.left != null) {
-                        nextStack.push(curNode.left);
+                        nextLevel.push(curNode.left);
                     }
                     if (curNode.right != null) {
-                        nextStack.push(curNode.right);
+                        nextLevel.push(curNode.right);
                     }
                 }
                 else {
                     if (curNode.right != null) {
-                        nextStack.push(curNode.right);
+                        nextLevel.push(curNode.right);
                     }
                     if (curNode.left != null) {
-                        nextStack.push(curNode.left);
+                        nextLevel.push(curNode.left);
                     }
                 }
             }
-            results.add(level);
-            isLeftToRight = !isLeftToRight;
-            // Exchange 2 stacks
-            temp = curStack;
-            curStack = nextStack;
-            nextStack = temp;
+
+            temp = curLevel;
+            curLevel = nextLevel;
+            nextLevel = temp;
+            results.add(list);
+            isNormal = !isNormal;
         }
 
         return results;
