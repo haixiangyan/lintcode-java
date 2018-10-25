@@ -19,7 +19,7 @@ public class LC70 {
         }
 
         Queue<TreeNode> queue = new LinkedList<>();
-        queue.offer(root);
+        queue.add(root);
 
         while (!queue.isEmpty()) {
             int size = queue.size();
@@ -30,10 +30,10 @@ public class LC70 {
                 level.add(curNode.val);
 
                 if (curNode.left != null) {
-                    queue.offer(curNode.left);
+                    queue.add(curNode.left);
                 }
                 if (curNode.right != null) {
-                    queue.offer(curNode.right);
+                    queue.add(curNode.right);
                 }
             }
 
