@@ -9,15 +9,15 @@ public class LC894 {
             return;
         }
 
-        int bound = array.length;
+        int bound = array.length - 1;
         while (bound > 0) {
-            for (int j = 0; j < bound; j++) {
-                if (array[0] < array[j]) {
-                    FlipTool.flip(array, j);
+            for (int i = 0; i <= bound; i++) {
+                if (array[0] < array[i]) {
+                    FlipTool.flip(array, i);
                 }
             }
 
-            FlipTool.flip(array, bound - 1);
+            FlipTool.flip(array, bound);
             bound--;
         }
     }
