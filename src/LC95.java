@@ -14,12 +14,14 @@ public class LC95 {
         public TreeNode minNode, maxNode;
         public ResultType(boolean isBST) {
             this.isBST = isBST;
-            this.minNode = null;
-            this.maxNode = null;
         }
     }
 
     public boolean isValidBST(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+
         return divideConquer(root).isBST;
     }
 
@@ -31,10 +33,11 @@ public class LC95 {
         ResultType left = divideConquer(root.left);
         ResultType right = divideConquer(root.right);
 
+        // First check isBST
         if (!left.isBST || !right.isBST) {
             return new ResultType(false);
         }
-
+        // Then check the order
         if (left.maxNode != null && left.maxNode.val >= root.val) {
             return new ResultType(false);
         }
@@ -42,9 +45,10 @@ public class LC95 {
             return new ResultType(false);
         }
 
+        // isBST
         ResultType result = new ResultType(true);
-        result.minNode = left.minNode != null ? left.minNode : root;
-        result.maxNode = right.maxNode != null ? right.maxNode : root;
+        result.minNode = (left.minNode == null) ? root: left.minNode;
+        result.maxNode = (right.maxNode == null) ? root : right.maxNode;
 
         return result;
     }
