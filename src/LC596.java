@@ -9,24 +9,47 @@ public class LC596 {
         }
     }
 
-    private TreeNode subtree;
-    private int subtreeSum = Integer.MAX_VALUE;
-
-    public TreeNode findSubtree(TreeNode root) {
-        helper(root);
-        return subtree;
+    class ResultType {
+        public TreeNode minSubtree;
+        public int minSum, sum;
+        public ResultType(TreeNode minSubtree, int minSum, int sum) {
+            this.minSubtree = minSubtree;
+            this.sum = sum;
+            this.minSum = minSum;
+        }
     }
 
-    private int helper(TreeNode root) {
+    public TreeNode findSubtree(TreeNode root) {
         if (root == null) {
-            return 0;
+            return root;
         }
 
-        int sum = helper(root.left) + helper(root.right) + root.val;
-        if (sum <= subtreeSum) {
-            subtreeSum = sum;
-            subtree = root;
+        return divideConquer(root).minSubtree;
+    }
+
+    private ResultType divideConquer(TreeNode root) {
+        if (root == null) {
+            return new ResultType(null, Integer.MAX_VALUE, 0);
         }
-        return sum;
+
+        ResultType left = divideConquer(root.left);
+        ResultType right = divideConquer(root.right);
+
+        ResultType result = new ResultType(
+                root,
+                left.sum + right.sum + root.val,
+                left.sum + right.sum + root.val
+        );
+
+        if (left.minSum <= result.minSum) {
+            result.minSum = left.minSum;
+            result.minSubtree = left.minSubtree;
+        }
+        if (right.minSum <= result.minSum) {
+            result.minSum = right.minSum;
+            result.minSubtree = right.minSubtree;
+        }
+
+        return result;
     }
 }
