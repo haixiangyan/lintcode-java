@@ -14,7 +14,6 @@ public class LC480 {
 
     public List<String> binaryTreePaths(TreeNode root) {
         List<String> paths = new ArrayList<>();
-
         if (root == null) {
             return paths;
         }
@@ -22,6 +21,7 @@ public class LC480 {
         List<String> leftPaths = binaryTreePaths(root.left);
         List<String> rightPaths = binaryTreePaths(root.right);
 
+        // Form paths
         for (String path : leftPaths) {
             paths.add(root.val + "->" + path);
         }
@@ -29,7 +29,7 @@ public class LC480 {
             paths.add(root.val + "->" + path);
         }
 
-        // If this is a leaf
+        // If root is a leaf
         if (paths.size() == 0) {
             paths.add("" + root.val);
         }
