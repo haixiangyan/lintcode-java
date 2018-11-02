@@ -12,46 +12,31 @@ public class LC453 {
         }
     }
 
-    class ResultType {
-        public TreeNode head;
-        public TreeNode tail;
-
-        public ResultType(TreeNode head, TreeNode tail) {
-            this.head = head;
-            this.tail = tail;
-        }
-    }
-
     public void flatten(TreeNode root) {
-        helper(root);
+        divideConquer(root);
     }
 
-    private ResultType helper(TreeNode root) {
+    private TreeNode divideConquer(TreeNode root) {
         if (root == null) {
             return null;
         }
 
-        ResultType left = helper(root.left);
-        ResultType right = helper(root.right);
+        TreeNode leftLastNode = divideConquer(root.left);
+        TreeNode rightLastNode = divideConquer(root.right);
 
-        root.left = null;
-
-        if (left != null && right == null) {
-            root.right = left.head;
-            return new ResultType(root, left.tail);
+        if (leftLastNode != null) {
+            leftLastNode.right = root.right;
+            root.right = root.left;
+            root.left = null;
         }
 
-        if (right != null && left == null) {
-            return new ResultType(root, right.tail);
+        if (rightLastNode != null) {
+            return rightLastNode;
+        }
+        if (leftLastNode != null) {
+            return leftLastNode;
         }
 
-        if (left != null && right != null) {
-            root.right = left.head;
-            left.tail.right = right.head;
-
-            return new ResultType(root, right.tail);
-        }
-
-        return new ResultType(root, root);
+        return root;
     }
 }
