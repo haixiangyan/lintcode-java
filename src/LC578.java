@@ -9,51 +9,50 @@ public class LC578 {
         }
     }
 
-    public class ResultType {
+    class ResultType {
         public boolean aExist, bExist;
-        public TreeNode node;
+        public TreeNode localLCA;
 
-        public ResultType(boolean aExist, boolean bExist, TreeNode node) {
+        public ResultType(boolean aExist, boolean bExist, TreeNode localLCA) {
             this.aExist = aExist;
             this.bExist = bExist;
-            this.node = node;
+            this.localLCA = localLCA;
         }
     }
 
     public TreeNode lowestCommonAncestor3(TreeNode root, TreeNode A, TreeNode B) {
-        ResultType rt = helper(root, A, B);
-
-        if (rt.aExist && rt.bExist) {
-            return rt.node;
-        }
-        else {
+        ResultType result = divideConquer(root, A, B);
+        if (result.aExist && result.bExist) {
+            return result.localLCA;
+        } else {
             return null;
         }
     }
 
-    private ResultType helper(TreeNode root, TreeNode A, TreeNode B) {
+    private ResultType divideConquer(TreeNode root, TreeNode A, TreeNode B) {
         if (root == null) {
             return new ResultType(false, false, null);
         }
 
-        ResultType left = helper(root.left, A, B);
-        ResultType right = helper(root.right, A, B);
+        ResultType left = divideConquer(root.left, A, B);
+        ResultType right = divideConquer(root.right, A, B);
 
         boolean aExist = left.aExist || right.aExist || root == A;
         boolean bExist = left.bExist || right.bExist || root == B;
 
         if (root == A || root == B) {
+            // Find the source of A and B, LCA would be A or B
             return new ResultType(aExist, bExist, root);
         }
 
-        if (left.node != null && right.node != null) {
+        if (left.localLCA != null && right.localLCA != null) {
             return new ResultType(aExist, bExist, root);
         }
-        if (left.node != null) {
-            return new ResultType(aExist, bExist, left.node);
+        if (left.localLCA != null) {
+            return new ResultType(aExist, bExist, left.localLCA);
         }
-        if (right.node != null) {
-            return new ResultType(aExist, bExist, right.node);
+        if (right.localLCA != null) {
+            return new ResultType(aExist, bExist, right.localLCA);
         }
 
         return new ResultType(aExist, bExist, null);
