@@ -1,4 +1,4 @@
-import java.util.Stack;
+import java.util.HashMap;
 
 public class LC902 {
     public class TreeNode {
@@ -12,31 +12,38 @@ public class LC902 {
     }
 
     public int kthSmallest(TreeNode root, int k) {
-        Stack<TreeNode> stack = new Stack<>();
+        HashMap<TreeNode, Integer> numOfNodes = new HashMap<>();
+        countNodes(root, numOfNodes);
+        return quickselect(root, k, numOfNodes);
+    }
 
-        TreeNode curNode = root;
-        while (curNode != null) {
-            stack.push(curNode);
-            curNode = curNode.left;
+    private int countNodes(TreeNode root, HashMap<TreeNode, Integer> numOfNodes) {
+        if (root == null) {
+            return 0;
         }
 
-        for (int i = 0; i < k - 1; i++) {
-            TreeNode node = stack.peek();
+        int left = countNodes(root.left, numOfNodes);
+        int right = countNodes(root.right, numOfNodes);
 
-            if (node.right == null) {
-                node = stack.pop();
-                while (!stack.isEmpty() && stack.peek().right == node) {
-                    node = stack.pop();
-                }
-            } else {
-                node = node.right;
-                while (node != null) {
-                    stack.push(node);
-                    node = node.left;
-                }
-            }
+        numOfNodes.put(root, left + right + 1);
+        return left + right + 1;
+    }
+
+    private int quickselect(TreeNode root, int k , HashMap<TreeNode, Integer> numOfNodes) {
+        if (root == null) {
+            return -1;
         }
 
-        return stack.peek().val;
+        int left = (root.left == null) ? 0 : numOfNodes.get(root.left);
+
+        if (k <= left) {
+            return quickselect(root.left, k, numOfNodes);
+        }
+
+        if (left + 1 == k) {
+            return root.val;
+        }
+
+        return quickselect(root.right, k - left - 1, numOfNodes);
     }
 }
