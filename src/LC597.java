@@ -9,42 +9,44 @@ public class LC597 {
         }
     }
 
-    public class ResultType {
-        public TreeNode node;
-        public int sum;
-        public int num;
-
-        public ResultType(int sum, int num) {
+    class ResultType {
+        public int sum, size;
+        public ResultType(int sum, int size) {
             this.sum = sum;
-            this.num = num;
+            this.size = size;
         }
     }
 
-    private ResultType subResult;
     private TreeNode subtree;
+    private ResultType subtreeResult;
 
     public TreeNode findSubtree2(TreeNode root) {
         if (root == null) {
-            return null;
+            return root;
         }
 
-        helper(root);
+        divideConquer(root);
+
         return subtree;
     }
 
-    private ResultType helper(TreeNode root) {
+    private ResultType divideConquer(TreeNode root) {
         if (root == null) {
             return new ResultType(0, 0);
         }
 
-        ResultType leftRt = helper(root.left);
-        ResultType rightRt = helper(root.right);
-        ResultType result = new ResultType(leftRt.sum + rightRt.sum + root.val, leftRt.num + rightRt.num + 1);
+        ResultType leftResult = divideConquer(root.left);
+        ResultType rightResult = divideConquer(root.right);
+        ResultType result = new ResultType(
+                leftResult.sum + rightResult.sum + root.val,
+                leftResult.size + rightResult.size + 1
+        );
 
-        if (subtree == null || subResult.sum * result.num < subResult.num * result.sum) {
+        if (subtree == null || result.sum * subtreeResult.size > subtreeResult.sum * result.size) {
             subtree = root;
-            subResult = result;
+            subtreeResult = result;
         }
+
         return result;
     }
 }
