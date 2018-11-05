@@ -7,32 +7,39 @@ public class LC474 {
     }
 
     public ParentTreeNode lowestCommonAncestorII(ParentTreeNode root, ParentTreeNode A, ParentTreeNode B) {
-        List<ParentTreeNode> pathA = getPath(A);
-        List<ParentTreeNode> pathB = getPath(B);
+        if (root == null) {
+            return null;
+        }
 
-        ParentTreeNode lowestCommonAncestor = null;
+        // Find the path
+        List<ParentTreeNode> aPath = getPaths(A);
+        List<ParentTreeNode> bPath = getPaths(B);
 
-        int indexA = pathA.size() - 1;
-        int indexB = pathB.size() - 1;
-
+        // Init backward iteration
+        ParentTreeNode lca = null;
+        int indexA = aPath.size() - 1;
+        int indexB = bPath.size() - 1;
         while (indexA >= 0 && indexB >= 0) {
-            if (pathA.get(indexA) != pathB.get(indexB)) {
+            if (aPath.get(indexA) != bPath.get(indexB)) {
                 break;
             }
-            lowestCommonAncestor = pathA.get(indexA);
+
+            lca = aPath.get(indexA);
             indexA--;
             indexB--;
         }
 
-        return lowestCommonAncestor;
+        return lca;
     }
 
-    private List<ParentTreeNode> getPath(ParentTreeNode node) {
+    private List<ParentTreeNode> getPaths(ParentTreeNode root) {
+        ParentTreeNode node = root;
         List<ParentTreeNode> path = new ArrayList<>();
         while (node != null) {
             path.add(node);
             node = node.parent;
         }
+
         return path;
     }
 }
