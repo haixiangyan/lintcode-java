@@ -47,8 +47,8 @@ public class LC246 {
         }
 
         // Left and right subtrees
-        postOrder(root.left, target, level + 1, buffer, paths);
-        postOrder(root.right, target, level + 1, buffer, paths);
+        preOrder(root.left, target, level + 1, buffer, paths);
+        preOrder(root.right, target, level + 1, buffer, paths);
 
         buffer.remove(level);
     }
