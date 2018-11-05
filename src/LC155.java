@@ -13,10 +13,11 @@ public class LC155 {
         if (root == null) {
             return 0;
         }
-        return getMin(root);
+
+        return divideConquer(root);
     }
 
-    private int getMin(TreeNode root) {
+    private int divideConquer(TreeNode root) {
         if (root == null) {
             return Integer.MAX_VALUE;
         }
@@ -25,6 +26,8 @@ public class LC155 {
             return 1;
         }
 
-        return Math.min(getMin(root.left), getMin(root.right));
+        int leftMin = divideConquer(root.left);
+        int rightMin = divideConquer(root.right);
+        return Math.min(leftMin, rightMin) + 1;
     }
 }
