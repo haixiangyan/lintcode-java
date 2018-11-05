@@ -13,32 +13,43 @@ public class LC246 {
     }
 
     public List<List<Integer>> binaryTreePathSum2(TreeNode root, int target) {
-        List<List<Integer>> result = new ArrayList<>();
+        List<List<Integer>> paths = new ArrayList<>();
+        List<Integer> buffer = new ArrayList<>();
+
         if (root == null) {
-            return result;
+            return paths;
         }
 
-        helper(root, target, new ArrayList<>(), result);
-        return result;
+        preOrder(root, target, 0, buffer, paths);
+
+        return paths;
     }
 
-    private void helper(TreeNode root, int target, List<Integer> buffer, List<List<Integer>> result) {
+    private void preOrder(TreeNode root, int target, int level, List<Integer> buffer, List<List<Integer>> paths) {
         if (root == null) {
             return;
         }
 
         buffer.add(root.val);
 
-        int sum = 0;
-        for (int i = buffer.size() - 1; i >= 0; i--) {
-            sum = sum + buffer.get(i);
-            if (sum == target) {
-                result.add(new ArrayList<>(buffer.subList(i, buffer.size())));
+        // Find paths
+        int tempTarget = target;
+        for (int i = level; i >= 0 ; i--) {
+            tempTarget = tempTarget - buffer.get(i);
+            if (tempTarget == 0) {
+                List<Integer> path = new ArrayList<>();
+                for (int j = i; j <= level; j++) {
+                    path.add(buffer.get(j));
+                }
+
+                paths.add(path);
             }
         }
 
-        helper(root.left, target, buffer, result);
-        helper(root.right, target, buffer, result);
-        buffer.remove(buffer.size() - 1);
+        // Left and right subtrees
+        postOrder(root.left, target, level + 1, buffer, paths);
+        postOrder(root.right, target, level + 1, buffer, paths);
+
+        buffer.remove(level);
     }
 }
