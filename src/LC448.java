@@ -8,19 +8,29 @@ public class LC448 {
             val = x;
         }
     }
+    private TreeNode successor;
 
     public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
-        TreeNode cand = null;
-
-        while (root != null) {
-            if (p.val >= root.val) {
-                root = root.right;
-            }
-            else {
-                cand = root;
-                root = root.left;
-            }
+        if (root == null) {
+            return null;
         }
-        return cand;
+
+        dfs(root, p);
+
+        return successor;
+    }
+
+    private void dfs(TreeNode root, TreeNode p) {
+        if (root == null) {
+            return;
+        }
+
+        if (root.val <= p.val) {
+            dfs(root.right, p);
+        }
+        else {
+            successor = root;
+            dfs(root.left, p);
+        }
     }
 }
