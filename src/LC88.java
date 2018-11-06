@@ -9,51 +9,34 @@ public class LC88 {
         }
     }
 
-    public class ResultType {
-        public boolean aExist;
-        public boolean bExist;
-        public TreeNode node;
-
-        public ResultType(boolean aExist, boolean bExist, TreeNode node) {
-            this.aExist = aExist;
-            this.bExist = bExist;
-            this.node = node;
-        }
-    }
-
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode A, TreeNode B) {
         if (root == null) {
             return null;
         }
 
-        return helper(root, A, B).node;
-    }
-
-    private ResultType helper(TreeNode root, TreeNode A, TreeNode B) {
-        if (root == null) {
-            return new ResultType(false, false, null);
-        }
-
-        ResultType leftRt = helper(root.left, A, B);
-        ResultType rightRt = helper(root.right, A, B);
-
-        boolean aExist = leftRt.aExist || rightRt.aExist || root == A;
-        boolean bExist = leftRt.bExist || rightRt.bExist || root == B;
+        TreeNode left = lowestCommonAncestor(root.left, A, B);
+        TreeNode right = lowestCommonAncestor(root.right, A, B);
 
         if (root == A || root == B) {
-            return new ResultType(aExist, bExist, root);
+            return root;
         }
 
-        if (leftRt.node != null && rightRt.node != null) {
-            return new ResultType(aExist, bExist, root);
-        }
-        if (leftRt.node != null) {
-            return new ResultType(aExist, bExist, leftRt.node);
-        }
-        if (rightRt.node != null) {
-            return new ResultType(aExist, bExist, rightRt.node);
+        if (left != null && right != null) {
+            if (left == right) {
+                return left;
+            }
+            else {
+                return root;
+            }
         }
 
-        return new ResultType(false, false, null);
+        if (left != null) {
+            return left;
+        }
+        if (right != null) {
+            return right;
+        }
+
+        return null;
     }
 }
