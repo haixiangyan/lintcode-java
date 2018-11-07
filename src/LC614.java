@@ -9,13 +9,14 @@ public class LC614 {
         }
     }
 
-    public class ResultType {
-        public int maxLength, maxDown, maxUp;
-
-        public ResultType(int len, int down, int up) {
-            maxLength = len;
-            maxDown = down;
-            maxUp = up;
+    class ResultType {
+        public int maxLength;
+        public int maxUp;
+        public int maxDown;
+        public ResultType(int maxLength, int maxUp, int maxDown) {
+            this.maxLength = maxLength;
+            this.maxDown = maxDown;
+            this.maxUp = maxUp;
         }
     }
 
@@ -24,35 +25,40 @@ public class LC614 {
             return 0;
         }
 
-        return helper(root).maxLength;
+        return divideConquer(root).maxLength;
     }
 
-    private ResultType helper(TreeNode root) {
+    private ResultType divideConquer(TreeNode root) {
         if (root == null) {
             return new ResultType(0, 0, 0);
         }
 
-        ResultType left = helper(root.left);
-        ResultType right = helper(root.right);
+        // Left and right traversal
+        ResultType leftRt = divideConquer(root.left);
+        ResultType rightRt = divideConquer(root.right);
 
-        int down = 0, up = 0;
+        // len = up + down + 1
+        int up = 0, down = 0;
 
         if (root.left != null && root.left.val + 1 == root.val) {
-            down = Math.max(down, left.maxDown + 1);
+            down = Math.max(down, leftRt.maxDown + 1);
         }
-        if (root.left != null && root.val + 1 == root.left.val) {
-            up = Math.max(up, left.maxUp + 1);
+        if (root.left != null && root.left.val - 1 == root.val) {
+            up = Math.max(up, leftRt.maxUp + 1);
         }
-        if (root.right != null && root.val + 1 == root.right.val) {
-            up = Math.max(up, right.maxUp + 1);
-        }
+
         if (root.right != null && root.right.val + 1 == root.val) {
-            down = Math.max(down, right.maxDown + 1);
+            down = Math.max(down, rightRt.maxDown + 1);
+        }
+        if (root.right != null && root.right.val - 1 == root.val) {
+            up = Math.max(up, rightRt.maxUp + 1);
         }
 
-        int len = down + 1 + up;
-        len = Math.max(len, Math.max(left.maxLength, right.maxLength));
-
-        return new ResultType(len, down, up);
+        int len = up + down + 1;
+        len = Math.max(
+                len,
+                Math.max(leftRt.maxLength, rightRt.maxLength)
+        );
+        return new ResultType(len, up, down);
     }
 }
