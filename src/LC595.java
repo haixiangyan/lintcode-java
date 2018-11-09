@@ -35,7 +35,7 @@ public class LC595 {
         ResultType right = divideConquer(root.right);
 
         // 加上 root，当前就是1
-        ResultType result = new ResultType(0, 1);
+        ResultType result = new ResultType(1, 1);
 
         if (root.left != null && root.val + 1 == root.left.val) {
             result.maxFromRoot = Math.max(
