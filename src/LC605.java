@@ -4,93 +4,73 @@ public class LC605 {
     public boolean sequenceReconstruction(int[] org, int[][] seqs) {
         Map<Integer, Set<Integer>> graph = new HashMap<>();
         Map<Integer, Integer> indegrees = new HashMap<>();
+        int n = org.length;
 
         // Init graph
-        initGraph(org, graph, indegrees);
+        for (int i = 0; i < org.length; i++) {
+            graph.put(org[i], new HashSet<>());
+            indegrees.put(org[i], 0);
+        }
 
         // Build graph
-        int n = org.length;
-        int seqLength = buildGraph(n, seqs, graph, indegrees);
-        if (seqLength == -1) {
-            return false;
-        }
-
-        // Check edge case
-        if (seqLength < n) {
-            return false;
-        }
-
-        // Topological sorting
-        int count = topSort(org, graph, indegrees);
-
-        return count == org.length;
-    }
-
-    private void initGraph(int[] org, Map<Integer, Set<Integer>> graph, Map<Integer, Integer> indegrees) {
-        for (int num : org) {
-            graph.put(num, new HashSet<>());
-            indegrees.put(num, 0);
-        }
-    }
-
-    private int buildGraph(
-            int n,
-            int[][] seqs,
-            Map<Integer, Set<Integer>> graph,
-            Map<Integer, Integer> indegrees
-    ) {
         int count = 0;
         for (int[] seq : seqs) {
             count = count + seq.length;
-            // Check the first element whether is invalid
-            if (seq.length >= 1 && (seq[0] <= 0 || seq[0] > n)) {
-                return -1;
+            if (seq.length > 0 && (seq[0] < 0 || seq[0] > n)) {
+                return false;
             }
+
             for (int i = 1; i < seq.length; i++) {
-                // Check if each element is valid
-                if (seq[i] <= 0 || seq[i] > n) {
-                    return -1;
+                if (seq[i] < 0 || seq[i] > n) {
+                    return false;
                 }
+
                 if (graph.get(seq[i - 1]).add(seq[i])) {
                     indegrees.put(seq[i], indegrees.get(seq[i]) + 1);
                 }
             }
         }
-        return count;
-    }
 
-    private int topSort(
-            int[] org,
-            Map<Integer, Set<Integer>> graph,
-            Map<Integer, Integer> indegrees
-    ) {
-        int index = 0;
+        if (count < n) {
+            return false;
+        }
+
+        // Init queue
         Queue<Integer> queue = new LinkedList<>();
-
         for (Integer num : indegrees.keySet()) {
             if (indegrees.get(num) == 0) {
                 queue.add(num);
             }
         }
 
+        // Top sort
+        int index = 0;
+        int[] order = new int[n];
         while (queue.size() == 1) {
-            int curNum = queue.poll();
+            Integer curNum = queue.poll();
 
-            // Find its neighbors and sub - 1 for their indegrees
-            for (int nextNum : graph.get(curNum)) {
+            order[index] = curNum;
+            if (org[index] != order[index]) {
+                return false;
+            }
+
+            // Find next num
+            for (Integer nextNum : graph.get(curNum)) {
+                // Subtract indegree
                 indegrees.put(nextNum, indegrees.get(nextNum) - 1);
                 if (indegrees.get(nextNum) == 0) {
                     queue.add(nextNum);
                 }
             }
 
-            // Check if curNum suit org sequence
-            if (curNum != org[index]) {
-                return -1;
-            }
-            index++;
+            index = index + 1;
         }
 
-        return index;
+        if (index != n) {
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 }
