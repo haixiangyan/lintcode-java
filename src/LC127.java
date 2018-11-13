@@ -12,58 +12,42 @@ public class LC127 {
     }
 
     public ArrayList<DirectedGraphNode> topSort(ArrayList<DirectedGraphNode> graph) {
-        // Get all nodes' indegreees
-        Map<DirectedGraphNode, Integer> indegrees = getIndegrees(graph);
+        if (graph == null) {
+            return new ArrayList<>();
+        }
 
-        // Init results list
-        ArrayList<DirectedGraphNode> results = new ArrayList<>();
-
-        // Init queue
-        Queue<DirectedGraphNode> queue = new LinkedList<>();
-        initQueue(graph, indegrees, queue, results);
-
-        // sorting
-        startSorting(queue, indegrees, results);
-
-        return results;
-    }
-
-    private Map<DirectedGraphNode, Integer> getIndegrees(ArrayList<DirectedGraphNode> graph) {
+        // Prepare indegrees
         Map<DirectedGraphNode, Integer> indegrees = new HashMap<>();
-
         for (DirectedGraphNode node : graph) {
-            // Find neighbor
             for (DirectedGraphNode neighbor : node.neighbors) {
-                indegrees.put(neighbor, indegrees.getOrDefault(neighbor,0) + 1);
+                indegrees.put(neighbor, indegrees.getOrDefault(neighbor, 0) + 1);
             }
         }
 
-        return indegrees;
-    }
 
-    private void initQueue(
-            ArrayList<DirectedGraphNode> graph,
-            Map<DirectedGraphNode, Integer> indegrees,
-            Queue<DirectedGraphNode> queue,
-            List<DirectedGraphNode> results)  {
+        Queue<DirectedGraphNode> queue = new LinkedList<>();
+        ArrayList<DirectedGraphNode> order = new ArrayList<>();
+        // Init queue and set
         for (DirectedGraphNode node : graph) {
             if (!indegrees.containsKey(node)) {
                 queue.add(node);
-                results.add(node);
+                order.add(node);
             }
         }
-    }
 
-    private void startSorting(Queue<DirectedGraphNode> queue, Map<DirectedGraphNode, Integer> indegrees, List<DirectedGraphNode> results) {
         while (!queue.isEmpty()) {
-            DirectedGraphNode node = queue.poll();
-            for (DirectedGraphNode n : node.neighbors) {
-                indegrees.put(n, indegrees.get(n) - 1);
-                if (indegrees.get(n) == 0) {
-                    results.add(n);
-                    queue.add(n);
+            DirectedGraphNode curNode = queue.poll();
+
+            // Find neighbors
+            for (DirectedGraphNode nextNode : curNode.neighbors) {
+                indegrees.put(nextNode, indegrees.get(nextNode) - 1);
+                if (indegrees.get(nextNode) == 0) {
+                    order.add(nextNode);
+                    queue.add(nextNode);
                 }
             }
         }
+
+        return order;
     }
 }
