@@ -12,7 +12,7 @@ public class LC228 {
 
     public ListNode middleNode(ListNode head) {
         if (head == null || head.next == null) {
-            return null;
+            return head;
         }
 
         ListNode slow = head;
