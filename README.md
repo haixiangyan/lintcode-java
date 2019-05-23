@@ -1,2 +1,3 @@
-# Lintcode
-Solutions for lintcode
+# lintcode-java
+
+Lintcode solutions in Java codes.
